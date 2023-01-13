@@ -40,6 +40,18 @@ set Salary = Salary * 1.1
 alter table Employee
 add constraint postSalary check (Salary > 0)
 
+--Create trigger
+create trigger tg_chkBirthDay
+on Employee
+for insert, update
+as
+	begin
+		if exists(select * from inserted where day(BirthDay) <= 23)
+		begin
+			print 'Birthday must be greater than 23'
+			rollback transaction
+		end
+	end
 --Create index
 create index IX_DepartmentName on Department(DepartName)
 
